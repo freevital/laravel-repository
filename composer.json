@@ -1,0 +1,32 @@
+{
+    "name": "freevital/laravel-repository",
+    "description": "Laravel 5 Repositories",
+    "keywords": ["laravel", "repository", "eloquent", "model"],
+    "authors": [
+        {
+            "name": "Vitaliy Kravchyshyn",
+            "email": "vital.kravchyshyn@gmail.com"
+        }
+    ],
+    "support": {
+        "email": "vital.kravchyshyn@gmail.com",
+        "issues":"https://github.com/freevital/laravel-repository/issues",
+        "wiki":"https://github.com/freevital/laravel-repository",
+        "source":"https://github.com/freevital/laravel-repository"
+    },
+    "type": "library",
+    "require": {
+        "illuminate/container": "~5.0",
+        "illuminate/database": "~5.0",
+        "illuminate/support": "~5.0",
+        "illuminate/console": "~5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Freevital\\Repository\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
