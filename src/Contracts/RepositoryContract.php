@@ -16,16 +16,6 @@ interface RepositoryContract
     public function paginate($limit = null, $columns = ['*'], $method = 'paginate');
 
     /**
-     * Retrieve all active entities and build a paginator.
-     *
-     * @param integer|null $limit
-     * @param array        $columns
-     *
-     * @return mixed
-     */
-    public function paginateActive($limit = null, $columns = ['*']);
-
-    /**
      * Retrieve all entities and build a simple paginator.
      *
      * @param integer|null $limit
@@ -36,16 +26,6 @@ interface RepositoryContract
     public function simplePaginate($limit = null, $columns = ['*']);
 
     /**
-     * Retrieve all active entities and build a simple paginator.
-     *
-     * @param integer|null $limit
-     * @param array        $columns
-     *
-     * @return mixed
-     */
-    public function simplePaginateActive($limit = null, $columns = ['*']);
-
-    /**
      * Retrieve all entities.
      *
      * @param array $columns
@@ -53,15 +33,6 @@ interface RepositoryContract
      * @return mixed
      */
     public function all($columns = ['*']);
-
-    /**
-     * Retrieve all active entities.
-     *
-     * @param array $columns
-     *
-     * @return mixed
-     */
-    public function allActive($columns = ['*']);
 
     /**
      * Retrieve the entities array for populate field select.
@@ -74,16 +45,6 @@ interface RepositoryContract
     public function lists($column, $key = null);
 
     /**
-     * Retrieve the active entities array for populate field select.
-     *
-     * @param string      $column
-     * @param string|null $key
-     *
-     * @return \Illuminate\Support\Collection|array
-     */
-    public function listsActive($column, $key = null);
-
-    /**
      * Find an entity by id.
      *
      * @param int   $id
@@ -94,16 +55,6 @@ interface RepositoryContract
     public function find($id, $columns = ['*']);
 
     /**
-     * Find an active entity by id.
-     *
-     * @param int   $id
-     * @param array $columns
-     *
-     * @return mixed
-     */
-    public function findActive($id, $columns = ['*']);
-
-    /**
      * Find a first entity.
      *
      * @param array $columns
@@ -111,15 +62,6 @@ interface RepositoryContract
      * @return mixed
      */
     public function first($columns = ['*']);
-
-    /**
-     * Find a first active entity.
-     *
-     * @param array $columns
-     *
-     * @return mixed
-     */
-    public function firstActive($columns = ['*']);
 
     /**
      * Find the entities by field and value.
@@ -226,7 +168,7 @@ interface RepositoryContract
      *
      * @return mixed
      */
-    public function forceDelete(int $id);
+    public function forceDelete($id);
 
     /**
      * Delete multiple entities by given criteria.

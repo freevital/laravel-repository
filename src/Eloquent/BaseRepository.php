@@ -110,21 +110,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Retrieve all active entities and build a paginator.
-     *
-     * @param integer|null $limit
-     * @param array        $columns
-     *
-     * @return mixed
-     */
-    public function paginateActive($limit = null, $columns = ['*'])
-    {
-        $this->applyActiveCondition();
-
-        return $this->paginate($limit, $columns);
-    }
-
-    /**
      * Retrieve all entities and build a simple paginator.
      *
      * @param integer|null $limit
@@ -134,21 +119,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      */
     public function simplePaginate($limit = null, $columns = ['*'])
     {
-        return $this->paginate($limit, $columns, 'simplePaginate');
-    }
-
-    /**
-     * Retrieve all active entities and build a simple paginator.
-     *
-     * @param integer|null $limit
-     * @param array        $columns
-     *
-     * @return mixed
-     */
-    public function simplePaginateActive($limit = null, $columns = ['*'])
-    {
-        $this->applyActiveCondition();
-
         return $this->paginate($limit, $columns, 'simplePaginate');
     }
 
@@ -173,20 +143,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Retrieve all active entities.
-     *
-     * @param array $columns
-     *
-     * @return mixed
-     */
-    public function allActive($columns = ['*'])
-    {
-        $this->applyActiveCondition();
-
-        return $this->all($columns);
-    }
-
-    /**
      * Retrieve the entities array for populate field select.
      *
      * @param string      $column
@@ -205,21 +161,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
         $this->resetQuery();
 
         return $result;
-    }
-
-    /**
-     * Retrieve the active entities array for populate field select.
-     *
-     * @param string      $column
-     * @param string|null $key
-     *
-     * @return \Illuminate\Support\Collection|array
-     */
-    public function listsActive($column, $key = null)
-    {
-        $this->applyActiveCondition();
-
-        return $this->lists($column, $key);
     }
 
     /**
@@ -246,21 +187,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Find an active entity by id.
-     *
-     * @param int   $id
-     * @param array $columns
-     *
-     * @return mixed
-     */
-    public function findActive($id, $columns = ['*'])
-    {
-        $this->applyActiveCondition();
-
-        return $this->find($id, $columns);
-    }
-
-    /**
      * Find a first entity.
      *
      * @param array $columns
@@ -278,20 +204,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
         $this->resetQuery();
 
         return $model;
-    }
-
-    /**
-     * Find a first active entity.
-     *
-     * @param array $columns
-     *
-     * @return mixed
-     */
-    public function firstActive($columns = ['*'])
-    {
-        $this->applyActiveCondition();
-
-        return $this->first($columns);
     }
 
     /**
@@ -509,7 +421,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      *
      * @return mixed
      */
-    public function forceDelete(int $id)
+    public function forceDelete($id)
     {
         $this->applyCriteria();
         $this->applyScope();
@@ -836,6 +748,25 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
             } else {
                 $this->query = $this->query->where($field, '=', $value);
             }
+        }
+    }
+
+    /**
+     * TODO: need to comment
+     *
+     * @param $name
+     * @param $arguments
+     *
+     * @return mixed
+     */
+    protected function __call($name, $arguments)
+    {
+        if ($pos = strpos($name, 'Active')) {
+            $method = substr($name, 0, $pos);
+
+            $this->applyActiveCondition();
+
+            return call_user_func_array(array($this, $method), $arguments);
         }
     }
 }
