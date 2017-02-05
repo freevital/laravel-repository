@@ -5,7 +5,7 @@ namespace Freevital\Repository\Contracts;
 interface RepositoryContract
 {
     /**
-     * Retrieve all entities and build a paginator.
+     * Paginate all entities.
      *
      * @param integer|null $limit
      * @param array        $columns
@@ -16,7 +16,7 @@ interface RepositoryContract
     public function paginate($limit = null, $columns = ['*'], $method = 'paginate');
 
     /**
-     * Retrieve all entities and build a simple paginator.
+     * Paginate all entities using simple paginator.
      *
      * @param integer|null $limit
      * @param array        $columns
@@ -35,14 +35,14 @@ interface RepositoryContract
     public function all($columns = ['*']);
 
     /**
-     * Retrieve the entities array for populate field select.
+     * Get entities values of a given key.
      *
      * @param string      $column
      * @param string|null $key
      *
      * @return \Illuminate\Support\Collection|array
      */
-    public function lists($column, $key = null);
+    public function pluck($column, $key = null);
 
     /**
      * Find an entity by id.
@@ -55,7 +55,7 @@ interface RepositoryContract
     public function find($id, $columns = ['*']);
 
     /**
-     * Find a first entity.
+     * Get first entity.
      *
      * @param array $columns
      *
@@ -64,18 +64,18 @@ interface RepositoryContract
     public function first($columns = ['*']);
 
     /**
-     * Find the entities by field and value.
+     * Find the entities by attribute and value.
      *
-     * @param string $field
+     * @param string $attribute
      * @param mixed  $value
      * @param array  $columns
      *
      * @return mixed
      */
-    public function findByField($field, $value, $columns = ['*']);
+    public function findByAttribute($attribute, $value, $columns = ['*']);
 
     /**
-     * Find the entities by multiple fields.
+     * Find the entities by multiple attributes.
      *
      * @param array $where
      * @param array $columns
@@ -85,36 +85,36 @@ interface RepositoryContract
     public function findWhere(array $where, $columns = ['*']);
 
     /**
-     * Find the entities by multiple values in one field.
+     * Find the entities by multiple values in one attribute.
      *
-     * @param mixed $field
+     * @param mixed $attribute
      * @param array $values
      * @param array $columns
      *
      * @return mixed
      */
-    public function findWhereIn($field, array $values, $columns = ['*']);
+    public function findWhereIn($attribute, array $values, $columns = ['*']);
 
     /**
-     * Find the entities by excluding multiple values in one field.
+     * Find the entities by excluding multiple values in one attribute.
      *
-     * @param mixed $field
+     * @param mixed $attribute
      * @param array $values
      * @param array $columns
      *
      * @return mixed
      */
-    public function findWhereNotIn($field, array $values, $columns = ['*']);
+    public function findWhereNotIn($attribute, array $values, $columns = ['*']);
 
     /**
-     * Count the entities.
+     * Get entities count.
      *
      * @return mixed
      */
     public function count();
 
     /**
-     * Create a new entity.
+     * Create new entity.
      *
      * @param array $attributes
      *
@@ -143,16 +143,6 @@ interface RepositoryContract
     public function updateOrCreate(array $attributes, array $values = []);
 
     /**
-     * Update a status of an entity.
-     *
-     * @param bool $status
-     * @param int  $id
-     *
-     * @return mixed
-     */
-    public function updateActiveStatus($status, int $id);
-
-    /**
      * Delete an entity by id.
      *
      * @param int $id
@@ -171,7 +161,7 @@ interface RepositoryContract
     public function forceDelete($id);
 
     /**
-     * Delete multiple entities by given criteria.
+     * Delete multiple entities by attribute values.
      *
      * @param array $where
      *
@@ -180,7 +170,7 @@ interface RepositoryContract
     public function deleteWhere(array $where);
 
     /**
-     * Force delete multiple entities by given criteria.
+     * Force delete multiple entities by attribute values.
      *
      * @param array $where
      *
@@ -209,22 +199,22 @@ interface RepositoryContract
     /**
      * Load relation with closure.
      *
-     * @param string  $relation
-     * @param closure $closure
+     * @param string   $relation
+     * @param \Closure $closure
      *
      * @return $this
      */
-    public function whereHas($relation, $closure);
+    public function whereHas($relation, \Closure $closure);
 
     /**
-     * Order the collection by a given column.
+     * Order the collection by a given attribute.
      *
-     * @param string $column
+     * @param string $attribute
      * @param string $direction
      *
      * @return $this
      */
-    public function orderBy($column, $direction = 'asc');
+    public function orderBy($attribute, $direction = 'asc');
 
     /**
      * Set visible fields.
@@ -245,7 +235,7 @@ interface RepositoryContract
     public function hidden(array $fields);
 
     /**
-     * Query Scope.
+     * Additional Query Scope.
      *
      * @param \Closure $scope
      *

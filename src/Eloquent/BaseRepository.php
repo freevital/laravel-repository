@@ -46,6 +46,11 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     protected $scopeQuery = null;
 
     /**
+     * @var array
+     */
+    protected static $macros;
+
+    /**
      * @param Application $app
      */
     public function __construct(Application $app)
@@ -86,7 +91,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Retrieve all entities and build a paginator.
+     * Paginate all entities.
      *
      * @param integer|null $limit
      * @param array        $columns
@@ -101,7 +106,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
 
         $limit = is_null($limit) ? config('repository.pagination.limit', 15) : $limit;
         $result = $this->query->{$method}($limit, $columns);
-        $result->appends(app('request')->query()); // TODO: need to refactor
+        $result->appends(app('request')->query());
 
         $this->resetScope();
         $this->resetQuery();
@@ -110,7 +115,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Retrieve all entities and build a simple paginator.
+     * Paginate all entities using simple paginator.
      *
      * @param integer|null $limit
      * @param array        $columns
@@ -143,19 +148,19 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Retrieve the entities array for populate field select.
+     * Get entities values of a given key.
      *
      * @param string      $column
      * @param string|null $key
      *
      * @return \Illuminate\Support\Collection|array
      */
-    public function lists($column, $key = null)
+    public function pluck($column, $key = null)
     {
         $this->applyCriteria();
         $this->applyScope();
 
-        $result = $this->query->lists($column, $key);
+        $result = $this->query->pluck($column, $key);
 
         $this->resetScope();
         $this->resetQuery();
@@ -187,7 +192,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Find a first entity.
+     * Get first entity.
      *
      * @param array $columns
      *
@@ -207,20 +212,20 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Find the entities by field and value.
+     * Find the entities by attribute and value.
      *
-     * @param string $field
+     * @param string $attribute
      * @param mixed  $value
      * @param array  $columns
      *
      * @return mixed
      */
-    public function findByField($field, $value, $columns = ['*'])
+    public function findByField($attribute, $value, $columns = ['*'])
     {
         $this->applyCriteria();
         $this->applyScope();
 
-        $result = $this->query->where($field, '=', $value)->get($columns);
+        $result = $this->query->where($attribute, '=', $value)->get($columns);
 
         $this->resetScope();
         $this->resetQuery();
@@ -229,7 +234,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Find the entities by multiple fields.
+     * Find the entities by multiple attributes.
      *
      * @param array $where
      * @param array $columns
@@ -251,19 +256,19 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Find the entities by multiple values in one field.
+     * Find the entities by multiple values in one attribute.
      *
-     * @param mixed $field
+     * @param mixed $attribute
      * @param array $values
      * @param array $columns
      *
      * @return mixed
      */
-    public function findWhereIn($field, array $values, $columns = ['*'])
+    public function findWhereIn($attribute, array $values, $columns = ['*'])
     {
         $this->applyCriteria();
 
-        $result = $this->query->whereIn($field, $values)->get($columns);
+        $result = $this->query->whereIn($attribute, $values)->get($columns);
 
         $this->resetQuery();
 
@@ -271,19 +276,19 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Find the entities by excluding multiple values in one field.
+     * Find the entities by excluding multiple values in one attribute.
      *
-     * @param mixed $field
+     * @param mixed $attribute
      * @param array $values
      * @param array $columns
      *
      * @return mixed
      */
-    public function findWhereNotIn($field, array $values, $columns = ['*'])
+    public function findWhereNotIn($attribute, array $values, $columns = ['*'])
     {
         $this->applyCriteria();
 
-        $result = $this->query->whereNotIn($field, $values)->get($columns);
+        $result = $this->query->whereNotIn($attribute, $values)->get($columns);
 
         $this->resetQuery();
 
@@ -291,7 +296,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Count the entities.
+     * Get entities count.
      *
      * @return mixed
      */
@@ -309,7 +314,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Create a new entity.
+     * Create new entity.
      *
      * @param array $attributes
      *
@@ -369,31 +374,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Update a status of an entity.
-     *
-     * @param bool $status
-     * @param int  $id
-     *
-     * @return mixed
-     */
-    public function updateActiveStatus($status, int $id)
-    {
-        $this->applyCriteria();
-        $this->applyScope();
-
-        $model = $this->query
-            ->where($this->model->getQualifiedKeyName(), $id)
-            ->first();
-        $model->is_active = $status;
-        $model->save();
-
-        $this->resetScope();
-        $this->resetQuery();
-
-        return $model;
-    }
-
-    /**
      * Delete an entity by id.
      *
      * @param int $id
@@ -436,7 +416,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Delete multiple entities by given criteria.
+     * Delete multiple entities by attribute values.
      *
      * @param array $where
      *
@@ -455,7 +435,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Force delete multiple entities by given criteria.
+     * Force delete multiple entities by attribute values.
      *
      * @param array $where
      *
@@ -504,12 +484,12 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     /**
      * Load relation with closure.
      *
-     * @param string  $relation
-     * @param closure $closure
+     * @param string   $relation
+     * @param \Closure $closure
      *
      * @return $this
      */
-    public function whereHas($relation, $closure)
+    public function whereHas($relation, \Closure $closure)
     {
         $this->query = $this->query->whereHas($relation, $closure);
 
@@ -517,16 +497,16 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Order the collection by a given column.
+     * Order the collection by a given attribute.
      *
-     * @param string $column
+     * @param string $attribute
      * @param string $direction
      *
      * @return $this
      */
-    public function orderBy($column, $direction = 'ASC')
+    public function orderBy($attribute, $direction = 'asc')
     {
-        $this->query = $this->query->orderBy($column, $direction);
+        $this->query = $this->query->orderBy($attribute, $direction);
 
         return $this;
     }
@@ -560,7 +540,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Query Scope.
+     * Additional Query Scope.
      *
      * @param \Closure $scope
      *
@@ -586,21 +566,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Add query by 'is_active' attribute to query.
-     *
-     * @param bool $isActive
-     *
-     * @return BaseRepository
-     */
-    protected function applyActiveCondition($isActive = true)
-    {
-        return $this->scopeQuery(function ($query) use ($isActive) {
-            return $query->where($query->getModel()->getTable() . '.is_active', $isActive);
-        });
-    }
-
-    /**
-     * Push Criteria for filter the query.
+     * Push Criteria to filter entities.
      *
      * @param $criteria
      *
@@ -644,7 +610,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Get Collection of Criteria.
+     * Get Criterias Collection.
      *
      * @return Collection
      */
@@ -654,7 +620,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Find data by Criteria.
+     * Get entities by Criteria.
      *
      * @param CriteriaContract $criteria
      *
@@ -684,7 +650,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Reset all Criteria.
+     * Reset all Criterias.
      *
      * @return $this
      */
@@ -741,32 +707,53 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      */
     protected function applyConditions(array $where)
     {
-        foreach ($where as $field => $value) {
+        foreach ($where as $attribute => $value) {
             if (is_array($value)) {
-                list($field, $condition, $val) = $value;
-                $this->query = $this->query->where($field, $condition, $val);
+                list($attribute, $condition, $val) = $value;
+                $this->query = $this->query->where($attribute, $condition, $val);
             } else {
-                $this->query = $this->query->where($field, '=', $value);
+                $this->query = $this->query->where($attribute, '=', $value);
             }
         }
     }
 
     /**
-     * TODO: need to comment
+     * Register a new repository macros.
      *
-     * @param $name
-     * @param $arguments
+     * @param string   $name
+     * @param \Closure $callback
      *
-     * @return mixed
+     * @throws RepositoryException
+     *
+     * @return void
      */
-    protected function __call($name, $arguments)
+    public static function macro($name, \Closure $callback)
     {
-        if ($pos = strpos($name, 'Active')) {
-            $method = substr($name, 0, $pos);
-
-            $this->applyActiveCondition();
-
-            return call_user_func_array(array($this, $method), $arguments);
+        if (!($callback instanceof \Closure)) {
+            throw new RepositoryException("Class \"{$callback}\" must be an instance of Closure.");
         }
+
+        static::$macros[$name] = $callback;
+    }
+
+    /**
+     * Call registered repository marcos.
+     *
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @throws RepositoryException
+     *
+     * @return $this
+     */
+    public function __call($name, $arguments)
+    {
+        if (!isset(static::$macros[$name])) {
+            throw new RepositoryException("Method or macros \"{$name}\" does not exists.");
+        }
+
+        call_user_func_array(static::$macros[$name], [$this, $arguments]);
+
+        return $this;
     }
 }

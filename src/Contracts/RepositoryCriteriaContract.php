@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 interface RepositoryCriteriaContract
 {
     /**
-     * Push Criteria for filter the query.
+     * Push Criteria to filter entities.
      *
      * @param $criteria
      *
@@ -26,14 +26,14 @@ interface RepositoryCriteriaContract
     public function popCriteria($criteria);
 
     /**
-     * Get Collection of Criteria.
+     * Get Criterias Collection.
      *
      * @return Collection
      */
     public function getCriteria();
 
     /**
-     * Find data by Criteria.
+     * Get entities by Criteria.
      *
      * @param CriteriaContract $criteria
      *
@@ -51,7 +51,7 @@ interface RepositoryCriteriaContract
     public function skipCriteria($status = true);
 
     /**
-     * Reset all Criteria.
+     * Reset all Criterias.
      *
      * @return $this
      */

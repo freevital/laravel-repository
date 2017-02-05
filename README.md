@@ -1,18 +1,23 @@
 # Laravel Repositories
 
-Laravel Repositories to abstract the database layer.
+[![Latest Stable Version](https://poser.pugx.org/freevital/laravel-repository/v/stable)](https://packagist.org/packages/freevital/laravel-repository)
+[![Total Downloads](https://poser.pugx.org/freevital/laravel-repository/downloads)](https://packagist.org/packages/freevital/laravel-repository)
+[![Monthly Downloads](https://poser.pugx.org/freevital/laravel-repository/d/monthly)](https://packagist.org/packages/freevital/laravel-repository)
+[![License](https://poser.pugx.org/freevital/laravel-repository/license)](https://packagist.org/packages/freevital/laravel-repository)
 
-##Installation
+Laravel Repositories to abstract a database layer.
 
-Run the following command to install the latest version
+## Installation
+
+Run the following command to install the latest version:
 
 ```bash
 composer require "freevital/laravel-repository"
 ```
 
-##Usage
+## Usage
 
-###Create a Repository
+### Create a Repository
 
 Your repository class must extend `Freevital\Repository\Eloquent\BaseRepository` abstract class and implement method `model()` which returns model's class name.
 
@@ -35,7 +40,7 @@ class PostRepository extends BaseRepository
 }
 ```
 
-###Use the repository in the controller
+### Use Repository in the Controller
 
 ```php
 namespace App\Http\Controllers;
@@ -74,7 +79,7 @@ class PostController extends Controller
 }
 ```
 
-###Create a Repository Criteria
+### Create a Repository Criteria
 
 Optionally you may create a separate Criteria class to apply specific query conditions. Your Criteria class must implement `Freevital\Repository\Contracts\CriteriaContract` interface.
 
@@ -90,7 +95,7 @@ class BySlugCriteria implements CriteriaContract
     /**
      * @var string
      */
-    protected $title;
+    protected $slug;
 
     /**
      * @param string $slug
@@ -110,14 +115,14 @@ class BySlugCriteria implements CriteriaContract
      */
     public function apply(Builder $query, RepositoryContract $repository)
     {
-        return $query->where('name', $this->slug);
+        return $query->where('slug', $this->slug);
     }
 }
 ```
 
-###Use Repository Criteria in the controller
+### Use Repository Criteria in the Controller
 
-You may use multiple criteria in a repository.
+You may use multiple criteria in the repository.
 
 ```php
 namespace App\Http\Controllers;
@@ -139,7 +144,7 @@ class PostController extends Controller
     public function show($slug)
     {
         $post = $this->postRepository
-            ->pushCriteria(new WithCommentsCriteria($slug))
+            ->pushCriteria(new WithCommentsCriteria())
             ->pushCriteria(new BySlugCriteria($slug))
             ->first();
     
@@ -148,9 +153,43 @@ class PostController extends Controller
 }
 ```
 
-##Available Methods
+## Criteria Macros
 
-###Freevital\Repository\Contracts\RepositoryContract
+
+If you would like to extend the repository functionality with custom common scope (ex. ActiveCriteria), you may use BaseRepository's macro method. For example, from a service provider's boot method:
+
+```php
+namespace App\Providers;
+
+use Freevital\Repository\Criteria\ActiveCriteria;
+use Freevital\Repository\Eloquent\BaseRepository;
+use Illuminate\Support\ServiceProvider;
+
+class RepositoryMacroServiceProvider extends ServiceProvider
+{
+    /**
+     * Register the application's repository macros.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        BaseRepository::macro('active', function (BaseRepository $repository) {
+            $repository->pushCriteria(new ActiveCriteria());
+        });
+    }
+}
+```
+
+The macro function accepts a name as its first argument, and a Closure as its second. The macro's Closure will be executed when calling the macro name from  any Repository instance:
+
+```php
+$this->postRepository->active()->all();
+```
+
+## Available Methods
+
+#### Freevital\Repository\Contracts\RepositoryContract
 
 ```php
 paginate($limit = null, $columns = ['*'], $method = 'paginate')
@@ -182,7 +221,7 @@ scopeQuery(\Closure $scope)
 resetScope()
 ```
 
-###Freevital\Repository\Contracts\RepositoryCriteriaContract
+#### Freevital\Repository\Contracts\RepositoryCriteriaContract
 
 ```php
 pushCriteria($criteria)
@@ -193,16 +232,70 @@ skipCriteria($status = true)
 resetCriteria()
 ```
 
-###Freevital\Repository\Contracts\CriteriaContract
+#### Freevital\Repository\Contracts\CriteriaContract
 
 ```php
 apply(Builder $query, RepositoryContract $repository)
 ```
 
-##Credits
+## Example usage
+
+Get all entities:
+
+```php
+$this->postRepository->all();
+
+// Fetch the specific columns
+$this->postRepository->all(['id', 'title']);
+```
+
+Entity pagination:
+
+```php
+$this->postRepository->paginate(20);
+```
+
+Get an entity by id:
+
+```php
+$this->postRepository->find($id);
+```
+
+Get first entity:
+
+```php
+$this->postRepository->pushCriteria(...)->first();
+```
+
+Get entities count:
+
+```php
+$this->postRepository->pushCriteria(...)->count();
+```
+
+Create new entity:
+
+```php
+$this->postRepository->create(Input::all());
+```
+
+Update an entity by id:
+
+```php
+$this->postRepository->update(Input::all(), $id);
+```
+
+Delete or force delete an entity by id:
+
+```php
+$this->postRepository->delete($id);
+$this->postRepository->forceDelete($id);
+```
+
+## Credits
 
 This package in mainly based on package by [@andersao](https://github.com/andersao/l5-repository).
 
-##License
+## License
 
 The contents of this repository is released under the MIT license.
