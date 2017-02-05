@@ -217,22 +217,22 @@ interface RepositoryContract
     public function orderBy($attribute, $direction = 'asc');
 
     /**
-     * Set visible fields.
+     * Set visible attributes.
      *
-     * @param array $fields
+     * @param array $attributes
      *
      * @return $this
      */
-    public function visible(array $fields);
+    public function visible(array $attributes);
 
     /**
-     * Set hidden fields.
+     * Set hidden attributes.
      *
-     * @param array $fields
+     * @param array $attributes
      *
      * @return $this
      */
-    public function hidden(array $fields);
+    public function hidden(array $attributes);
 
     /**
      * Additional Query Scope.

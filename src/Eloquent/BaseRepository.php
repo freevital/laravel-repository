@@ -512,29 +512,29 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Set visible fields.
+     * Set visible attributes.
      *
-     * @param array $fields
+     * @param array $attributes
      *
      * @return $this
      */
-    public function visible(array $fields)
+    public function visible(array $attributes)
     {
-        $this->query->setVisible($fields);
+        $this->query->setVisible($attributes);
 
         return $this;
     }
 
     /**
-     * Set hidden fields.
+     * Set hidden attributes.
      *
-     * @param array $fields
+     * @param array $attributes
      *
      * @return $this
      */
-    public function hidden(array $fields)
+    public function hidden(array $attributes)
     {
-        $this->query->setHidden($fields);
+        $this->query->setHidden($attributes);
 
         return $this;
     }
