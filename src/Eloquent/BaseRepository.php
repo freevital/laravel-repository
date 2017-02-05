@@ -759,7 +759,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      *
      * @return mixed
      */
-    protected function __call($name, $arguments)
+    private function __call($name, $arguments)
     {
         if ($pos = strpos($name, 'Active')) {
             $method = substr($name, 0, $pos);

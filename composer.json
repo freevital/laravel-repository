@@ -11,7 +11,6 @@
     "support": {
         "email": "vital.kravchyshyn@gmail.com",
         "issues":"https://github.com/freevital/laravel-repository/issues",
-        "wiki":"https://github.com/freevital/laravel-repository",
         "source":"https://github.com/freevital/laravel-repository"
     },
     "type": "library",

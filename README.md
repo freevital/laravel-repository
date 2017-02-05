@@ -1,5 +1,10 @@
 # Laravel Repositories
 
+[![Latest Stable Version](https://poser.pugx.org/freevital/laravel-repository/v/stable)](https://packagist.org/packages/freevital/laravel-repository)
+[![Total Downloads](https://poser.pugx.org/freevital/laravel-repository/downloads)](https://packagist.org/packages/freevital/laravel-repository)
+[![Monthly Downloads](https://poser.pugx.org/freevital/laravel-repository/d/monthly)](https://packagist.org/packages/freevital/laravel-repository)
+[![License](https://poser.pugx.org/freevital/laravel-repository/license)](https://packagist.org/packages/freevital/laravel-repository)
+
 Laravel Repositories to abstract the database layer.
 
 ##Installation
@@ -88,6 +93,32 @@ use Freevital\Repository\Contracts\RepositoryContract;
 class BySlugCriteria implements CriteriaContract
 {
     /**
+     * Apply criteria in query repository.
+     *
+     * @param Builder            $query
+     * @param RepositoryContract $repository
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function apply(Builder $query, RepositoryContract $repository)
+    {
+        return $query->with('comments.users');
+    }
+}
+```
+
+You may TODO
+
+```php
+namespace App\Repositories\Criteria;
+
+use Illuminate\Database\Eloquent\Builder;
+use Freevital\Repository\Contracts\CriteriaContract;
+use Freevital\Repository\Contracts\RepositoryContract;
+
+class BySlugCriteria implements CriteriaContract
+{
+    /**
      * @var string
      */
     protected $title;
@@ -150,7 +181,7 @@ class PostController extends Controller
 
 ##Available Methods
 
-###Freevital\Repository\Contracts\RepositoryContract
+####Freevital\Repository\Contracts\RepositoryContract
 
 ```php
 paginate($limit = null, $columns = ['*'], $method = 'paginate')
@@ -182,7 +213,7 @@ scopeQuery(\Closure $scope)
 resetScope()
 ```
 
-###Freevital\Repository\Contracts\RepositoryCriteriaContract
+####Freevital\Repository\Contracts\RepositoryCriteriaContract
 
 ```php
 pushCriteria($criteria)
@@ -193,7 +224,7 @@ skipCriteria($status = true)
 resetCriteria()
 ```
 
-###Freevital\Repository\Contracts\CriteriaContract
+####Freevital\Repository\Contracts\CriteriaContract
 
 ```php
 apply(Builder $query, RepositoryContract $repository)
