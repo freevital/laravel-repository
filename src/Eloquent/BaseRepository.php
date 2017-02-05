@@ -220,7 +220,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      *
      * @return mixed
      */
-    public function findByField($attribute, $value, $columns = ['*'])
+    public function findByAttribute($attribute, $value, $columns = ['*'])
     {
         $this->applyCriteria();
         $this->applyScope();
