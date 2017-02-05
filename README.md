@@ -93,6 +93,32 @@ use Freevital\Repository\Contracts\RepositoryContract;
 class BySlugCriteria implements CriteriaContract
 {
     /**
+     * Apply criteria in query repository.
+     *
+     * @param Builder            $query
+     * @param RepositoryContract $repository
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function apply(Builder $query, RepositoryContract $repository)
+    {
+        return $query->with('comments.users');
+    }
+}
+```
+
+You may TODO
+
+```php
+namespace App\Repositories\Criteria;
+
+use Illuminate\Database\Eloquent\Builder;
+use Freevital\Repository\Contracts\CriteriaContract;
+use Freevital\Repository\Contracts\RepositoryContract;
+
+class BySlugCriteria implements CriteriaContract
+{
+    /**
      * @var string
      */
     protected $slug;
@@ -154,7 +180,6 @@ class PostController extends Controller
 ```
 
 ## Criteria Macros
-
 
 If you would like to extend the repository functionality with custom common scope (ex. ActiveCriteria), you may use BaseRepository's macro method. For example, from a service provider's boot method:
 
