@@ -114,6 +114,13 @@ interface RepositoryContract
     public function count();
 
     /**
+     * Determine if the entity exists.
+     *
+     * @return mixed
+     */
+    public function exists();
+
+    /**
      * Create new entity.
      *
      * @param array $attributes

@@ -314,6 +314,24 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
+     * Determine if the entity exists.
+     *
+     * @return mixed
+     */
+    public function exists()
+    {
+        $this->applyCriteria();
+        $this->applyScope();
+
+        $exists = $this->query->exists();
+
+        $this->resetScope();
+        $this->resetQuery();
+
+        return $exists;
+    }
+
+    /**
      * Create new entity.
      *
      * @param array $attributes
