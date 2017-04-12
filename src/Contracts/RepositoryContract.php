@@ -50,7 +50,7 @@ interface RepositoryContract
      * @param int   $id
      * @param array $columns
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static[]|static|null
      */
     public function find($id, $columns = ['*']);
 
@@ -59,7 +59,7 @@ interface RepositoryContract
      *
      * @param array $columns
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model|static|null
      */
     public function first($columns = ['*']);
 

@@ -174,7 +174,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      * @param int   $id
      * @param array $columns
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static[]|static|null
      */
     public function find($id, $columns = ['*'])
     {
@@ -183,7 +183,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
 
         $model = $this->query
             ->where($this->model->getQualifiedKeyName(), $id)
-            ->firstOrFail($columns);
+            ->first($columns);
 
         $this->resetScope();
         $this->resetQuery();
@@ -196,14 +196,14 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      *
      * @param array $columns
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model|static|null
      */
     public function first($columns = ['*'])
     {
         $this->applyCriteria();
         $this->applyScope();
 
-        $model = $this->query->firstOrFail($columns);
+        $model = $this->query->first($columns);
 
         $this->resetScope();
         $this->resetQuery();
