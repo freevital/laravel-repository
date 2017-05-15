@@ -2,13 +2,13 @@
 
 namespace Freevital\Repository\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder;
 use Freevital\Repository\Contracts\CriteriaContract;
 use Freevital\Repository\Contracts\RepositoryContract;
 use Freevital\Repository\Contracts\RepositoryCriteriaContract;
 use Freevital\Repository\Exceptions\RepositoryException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Container\Container as Application;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaContract
@@ -29,7 +29,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     protected $query;
 
     /**
-     * Collection of Criteria
+     * Collection of Criteria.
      *
      * @var Collection
      */
@@ -62,15 +62,15 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     }
 
     /**
-     * Specify Model class name
+     * Specify Model class name.
      *
      * @return string
      */
     abstract public function model();
 
     /**
-     * @return Model
      * @throws RepositoryException
+     * @return Model
      */
     public function makeModel()
     {
@@ -93,9 +93,9 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     /**
      * Paginate all entities.
      *
-     * @param integer|null $limit
-     * @param array        $columns
-     * @param string       $method
+     * @param int|null $limit
+     * @param array    $columns
+     * @param string   $method
      *
      * @return mixed
      */
@@ -117,8 +117,8 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
     /**
      * Paginate all entities using simple paginator.
      *
-     * @param integer|null $limit
-     * @param array        $columns
+     * @param int|null $limit
+     * @param array    $columns
      *
      * @return mixed
      */
@@ -588,16 +588,17 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      *
      * @param $criteria
      *
-     * @return $this
      * @throws RepositoryException
+     *
+     * @return $this
      */
     public function pushCriteria($criteria)
     {
         if (is_string($criteria)) {
-            $criteria = new $criteria;
+            $criteria = new $criteria();
         }
         if (!$criteria instanceof CriteriaContract) {
-            throw new RepositoryException("Class " . get_class($criteria) . " must be an instance of Prettus\\Repository\\Contracts\\CriteriaInterface");
+            throw new RepositoryException('Class '.get_class($criteria).' must be an instance of Prettus\\Repository\\Contracts\\CriteriaInterface');
         }
         $this->criteria->push($criteria);
 
@@ -742,7 +743,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      * @param \Closure $callback
      *
      * @throws RepositoryException
-     *
      * @return void
      */
     public static function macro($name, \Closure $callback)
@@ -761,7 +761,6 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      * @param array  $arguments
      *
      * @throws RepositoryException
-     *
      * @return $this
      */
     public function __call($name, $arguments)

@@ -2,6 +2,7 @@
 
 namespace Freevital\Repository\Contracts;
 
+use Freevital\Repository\Exceptions\RepositoryException;
 use Illuminate\Support\Collection;
 
 interface RepositoryCriteriaContract
@@ -11,8 +12,9 @@ interface RepositoryCriteriaContract
      *
      * @param $criteria
      *
-     * @return $this
      * @throws RepositoryException
+     *
+     * @return $this
      */
     public function pushCriteria($criteria);
 
