@@ -70,6 +70,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
 
     /**
      * @throws RepositoryException
+     *
      * @return Model
      */
     public function makeModel()
@@ -743,6 +744,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      * @param \Closure $callback
      *
      * @throws RepositoryException
+     *
      * @return void
      */
     public static function macro($name, \Closure $callback)
@@ -761,6 +763,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      * @param array  $arguments
      *
      * @throws RepositoryException
+     * 
      * @return $this
      */
     public function __call($name, $arguments)
