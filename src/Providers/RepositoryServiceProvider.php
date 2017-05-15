@@ -20,7 +20,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $config_path = __DIR__ . '/../../config/repository.php';
+        $config_path = __DIR__.'/../../config/repository.php';
 
         // Publish config
         $this->publishes([$config_path => config_path('repository.php')]);
@@ -33,7 +33,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $config_path = __DIR__ . '/../../config/repository.php';
+        $config_path = __DIR__.'/../../config/repository.php';
 
         // Merge config
         $this->mergeConfigFrom($config_path, 'repository');

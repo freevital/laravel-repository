@@ -5,7 +5,7 @@ namespace Freevital\Repository\Exceptions;
 use Exception;
 
 /**
- * @{inheritdoc}
+ * {@inheritdoc}
  */
 class RepositoryException extends Exception
 {

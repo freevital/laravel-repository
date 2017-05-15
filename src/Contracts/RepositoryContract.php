@@ -7,9 +7,9 @@ interface RepositoryContract
     /**
      * Paginate all entities.
      *
-     * @param integer|null $limit
-     * @param array        $columns
-     * @param string       $method
+     * @param int|null $limit
+     * @param array    $columns
+     * @param string   $method
      *
      * @return mixed
      */
@@ -18,8 +18,8 @@ interface RepositoryContract
     /**
      * Paginate all entities using simple paginator.
      *
-     * @param integer|null $limit
-     * @param array        $columns
+     * @param int|null $limit
+     * @param array    $columns
      *
      * @return mixed
      */
