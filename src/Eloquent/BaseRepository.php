@@ -763,7 +763,7 @@ abstract class BaseRepository implements RepositoryContract, RepositoryCriteriaC
      * @param array  $arguments
      *
      * @throws RepositoryException
-     * 
+     *
      * @return $this
      */
     public function __call($name, $arguments)
